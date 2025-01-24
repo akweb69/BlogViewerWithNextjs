@@ -1,24 +1,20 @@
-// This is a server-side function (No `useState` here)
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
-
-// This will run on the server-side to fetch user data
-export async function getServerSideProps() {
-    const { getUser } = getKindeServerSession();
-    const user = await getUser();  // Fetch user info from Kinde session
-
-    return {
-        props: { user },  // Pass user data as props to the component
-    };
-}
-
-// This is a client-side component (use `useState` here)
-import { useState } from "react";
+"use client";
 import Link from "next/link";
-import { RegisterLink, LoginLink, LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
+import { RegisterLink, LoginLink } from "@kinde-oss/kinde-auth-nextjs/components";
+import { useState, useEffect } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 
-const Nav = ({ user }) => {
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);  // useState is used here
+const Nav = () => {
+    const [user, setUser] = useState(null);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+    useEffect(() => {
+        // Fetch the user data from API route
+        fetch("/api/getUserSession")
+            .then((response) => response.json())
+            .then((data) => setUser(data.user))
+            .catch((error) => console.error("Error fetching user data:", error));
+    }, []);
 
     // Toggle mobile menu
     const toggleMobileMenu = () => {
@@ -40,16 +36,9 @@ const Nav = ({ user }) => {
                             Profile
                         </Link>
 
-                        {/* Conditional rendering for Login/Logout */}
+                        {/* Login and Register buttons */}
                         {user ? (
-                            <div className="flex items-center gap-4">
-                                <span className="text-white">Welcome, {user.name}</span>
-                                <LogoutLink>
-                                    <button className="p-2 px-4 text-white border rounded-lg hover:bg-white hover:text-orange-500 transition">
-                                        Logout
-                                    </button>
-                                </LogoutLink>
-                            </div>
+                            <span className="text-white">Welcome, {user.name}</span>
                         ) : (
                             <>
                                 <LoginLink>
@@ -68,8 +57,11 @@ const Nav = ({ user }) => {
 
                     {/* Mobile Menu Button */}
                     <div className="md:hidden flex items-center">
-                        <button onClick={toggleMobileMenu} className="p-2 text-white hover:bg-orange-600 rounded-full">
-                            {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
+                        <button
+                            onClick={toggleMobileMenu}
+                            className="p-2 text-white hover:bg-orange-600 rounded-full"
+                        >
+                            {isMobileMenuOpen ? <FaTimes /> : <FaBars />} {/* Toggle between bars and times icon */}
                         </button>
                     </div>
                 </div>
@@ -84,26 +76,16 @@ const Nav = ({ user }) => {
                     <Link href={"/dashboard"} className="text-white hover:bg-orange-700 p-2 rounded-lg">
                         Profile
                     </Link>
-                    {user ? (
-                        <LogoutLink>
-                            <button className="text-white p-2 px-4 rounded-lg border hover:bg-white hover:text-orange-500">
-                                Logout
-                            </button>
-                        </LogoutLink>
-                    ) : (
-                        <>
-                            <LoginLink>
-                                <button className="text-white p-2 px-4 rounded-lg border hover:bg-white hover:text-orange-500">
-                                    Sign In
-                                </button>
-                            </LoginLink>
-                            <RegisterLink>
-                                <button className="text-white p-2 px-4 rounded-lg border hover:bg-white hover:text-orange-500">
-                                    Sign Up
-                                </button>
-                            </RegisterLink>
-                        </>
-                    )}
+                    <LoginLink>
+                        <button className="text-white p-2 px-4 rounded-lg border hover:bg-white hover:text-orange-500">
+                            Sign In
+                        </button>
+                    </LoginLink>
+                    <RegisterLink>
+                        <button className="text-white p-2 px-4 rounded-lg border hover:bg-white hover:text-orange-500">
+                            Sign Up
+                        </button>
+                    </RegisterLink>
                 </div>
             )}
         </div>
