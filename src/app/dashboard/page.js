@@ -2,9 +2,9 @@ import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 
 const page = async () => {
-  const { isAuthenticated, user } = await getKindeServerSession();
+  const { isAuthenticated, getUser } = await getKindeServerSession();
   const isUserAuthenticated = await isAuthenticated();
-  console.log(user);
+  const user = await getUser();
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <div className="w-full max-w-4xl mx-auto py-16 px-4">

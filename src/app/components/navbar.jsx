@@ -1,20 +1,14 @@
 "use client";
 import Link from "next/link";
 import { RegisterLink, LoginLink, LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+const Nav = async () => {
 
-const Nav = () => {
-    const [user, setUser] = useState(null);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-    useEffect(() => {
-        // Fetch the user data from API route (assumes you have a session or user data available)
-        fetch("/api/getUserSession")
-            .then((response) => response.json())
-            .then((data) => setUser(data.user))
-            .catch((error) => console.error("Error fetching user data:", error));
-    }, []);
+    const { getUser } = getKindeServerSession();
+    const user = await getUser();
 
     // Toggle mobile menu
     const toggleMobileMenu = () => {
