@@ -1,14 +1,21 @@
-"use client";
+import { useState } from "react";  // Import useState hook
 import Link from "next/link";
 import { RegisterLink, LoginLink, LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
-import { useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
-const Nav = async () => {
 
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+// This will run on the server-side to fetch user data
+export async function getServerSideProps() {
     const { getUser } = getKindeServerSession();
-    const user = await getUser();
+    const user = await getUser();  // Fetch user info from Kinde session
+
+    return {
+        props: { user },  // Pass user data as props
+    };
+}
+
+const Nav = ({ user }) => {
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);  // useState should be correctly imported
 
     // Toggle mobile menu
     const toggleMobileMenu = () => {
@@ -58,11 +65,8 @@ const Nav = async () => {
 
                     {/* Mobile Menu Button */}
                     <div className="md:hidden flex items-center">
-                        <button
-                            onClick={toggleMobileMenu}
-                            className="p-2 text-white hover:bg-orange-600 rounded-full"
-                        >
-                            {isMobileMenuOpen ? <FaTimes /> : <FaBars />} {/* Toggle between bars and times icon */}
+                        <button onClick={toggleMobileMenu} className="p-2 text-white hover:bg-orange-600 rounded-full">
+                            {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
                         </button>
                     </div>
                 </div>
