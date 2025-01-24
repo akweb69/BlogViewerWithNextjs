@@ -2,9 +2,9 @@ import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 
 const page = async () => {
-  const { isAuthenticated, user } = await getKindeServerSession(); // Assuming 'user' contains user details
+  const { isAuthenticated, user } = await getKindeServerSession();
   const isUserAuthenticated = await isAuthenticated();
-
+  console.log(user);
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <div className="w-full max-w-4xl mx-auto py-16 px-4">
@@ -18,8 +18,12 @@ const page = async () => {
                 You are successfully logged in. Here are your details:
               </p>
               <div className="text-left text-gray-400 mb-6">
-                <p className="text-xl font-semibold">Name: {user?.name}</p>
-                <p className="text-xl font-semibold">Email: {user?.email}</p>
+                <p className="text-xl font-semibold">
+                  Name: {user?.family_name || "User Name"}
+                </p>
+                <p className="text-xl font-semibold">
+                  Email: {user?.email || "User email"}{" "}
+                </p>
               </div>
               <LogoutLink>
                 <button className="bg-orange-600 text-white font-semibold rounded-lg py-2 px-6 shadow-md transition-transform transform hover:scale-105 hover:bg-orange-500">
