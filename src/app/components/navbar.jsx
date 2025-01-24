@@ -1,15 +1,15 @@
 "use client";
 import Link from "next/link";
-import { RegisterLink, LoginLink } from "@kinde-oss/kinde-auth-nextjs/components";
+import { RegisterLink, LoginLink, LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
 import { useState, useEffect } from "react";
-import { FaBars, FaTimes } from "react-icons/fa"; // Importing React Icons
+import { FaBars, FaTimes } from "react-icons/fa";
 
 const Nav = () => {
     const [user, setUser] = useState(null);
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State for mobile menu
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     useEffect(() => {
-        // Fetch the user data from API route
+        // Fetch the user data from API route (assumes you have a session or user data available)
         fetch("/api/getUserSession")
             .then((response) => response.json())
             .then((data) => setUser(data.user))
@@ -36,9 +36,16 @@ const Nav = () => {
                             Profile
                         </Link>
 
-                        {/* Login and Register buttons */}
+                        {/* Conditional rendering for Login/Logout */}
                         {user ? (
-                            <span className="text-white">Welcome, {user.name}</span>
+                            <div className="flex items-center gap-4">
+                                <span className="text-white">Welcome, {user.name}</span>
+                                <LogoutLink>
+                                    <button className="p-2 px-4 text-white border rounded-lg hover:bg-white hover:text-orange-500 transition">
+                                        Logout
+                                    </button>
+                                </LogoutLink>
+                            </div>
                         ) : (
                             <>
                                 <LoginLink>
@@ -76,16 +83,26 @@ const Nav = () => {
                     <Link href={"/dashboard"} className="text-white hover:bg-orange-700 p-2 rounded-lg">
                         Profile
                     </Link>
-                    <LoginLink>
-                        <button className="text-white p-2 px-4 rounded-lg border hover:bg-white hover:text-orange-500">
-                            Sign In
-                        </button>
-                    </LoginLink>
-                    <RegisterLink>
-                        <button className="text-white p-2 px-4 rounded-lg border hover:bg-white hover:text-orange-500">
-                            Sign Up
-                        </button>
-                    </RegisterLink>
+                    {user ? (
+                        <LogoutLink>
+                            <button className="text-white p-2 px-4 rounded-lg border hover:bg-white hover:text-orange-500">
+                                Logout
+                            </button>
+                        </LogoutLink>
+                    ) : (
+                        <>
+                            <LoginLink>
+                                <button className="text-white p-2 px-4 rounded-lg border hover:bg-white hover:text-orange-500">
+                                    Sign In
+                                </button>
+                            </LoginLink>
+                            <RegisterLink>
+                                <button className="text-white p-2 px-4 rounded-lg border hover:bg-white hover:text-orange-500">
+                                    Sign Up
+                                </button>
+                            </RegisterLink>
+                        </>
+                    )}
                 </div>
             )}
         </div>
