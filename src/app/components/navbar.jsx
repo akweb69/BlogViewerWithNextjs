@@ -10,7 +10,7 @@ const Nav = () => {
 
     useEffect(() => {
         // Fetch the user data from API route
-        fetch("/api/getUserSession")
+        fetch("https://blogviewer12.kinde.com/api/getUserSession")
             .then((response) => response.json())
             .then((data) => setUser(data.user))
             .catch((error) => console.error("Error fetching user data:", error));
