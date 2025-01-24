@@ -1,8 +1,4 @@
-"use client"
-import { useState } from "react";  // Import useState hook
-import Link from "next/link";
-import { RegisterLink, LoginLink, LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
-import { FaBars, FaTimes } from "react-icons/fa";
+// This is a server-side function (No `useState` here)
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 
 // This will run on the server-side to fetch user data
@@ -11,12 +7,18 @@ export async function getServerSideProps() {
     const user = await getUser();  // Fetch user info from Kinde session
 
     return {
-        props: { user },  // Pass user data as props
+        props: { user },  // Pass user data as props to the component
     };
 }
 
+// This is a client-side component (use `useState` here)
+import { useState } from "react";
+import Link from "next/link";
+import { RegisterLink, LoginLink, LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
+import { FaBars, FaTimes } from "react-icons/fa";
+
 const Nav = ({ user }) => {
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);  // useState should be correctly imported
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);  // useState is used here
 
     // Toggle mobile menu
     const toggleMobileMenu = () => {
