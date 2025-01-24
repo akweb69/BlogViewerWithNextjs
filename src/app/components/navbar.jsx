@@ -1,28 +1,38 @@
-"use client";
+
 import Link from "next/link";
 import { RegisterLink, LoginLink } from "@kinde-oss/kinde-auth-nextjs/components";
-import { useState, useEffect } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/dist/types/server";
 
-const Nav = () => {
-    const [user, setUser] = useState(null);
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-    useEffect(() => {
-        // Fetch the user data from API route
-        fetch("https://blogviewer12.kinde.com/api/getUserSession")
-            .then((response) => response.json())
-            .then((data) => setUser(data.user))
-            .catch((error) => console.error("Error fetching user data:", error));
-    }, []);
-
-    // Toggle mobile menu
-    const toggleMobileMenu = () => {
-        setIsMobileMenuOpen((prevState) => !prevState);
-    };
+const Nav = async () => {
+    const { isAuthenticated, getUser } = await getKindeServerSession();
+    const isUserAuthenticated = await isAuthenticated();
+    const user = await getUser();
 
     return (
         <div className="w-full bg-gradient-to-b from-gray-800 to-gray-900">
+
+            {/*  */}
+            <div className="navbar bg-base-100">
+                <div className="flex-1">
+                    <a className="btn btn-ghost text-xl">daisyUI</a>
+                </div>
+                <div className="flex-none">
+                    <ul className="menu menu-horizontal px-1">
+                        <li><a>Link</a></li>
+                        <li>
+                            <details>
+                                <summary>Parent</summary>
+                                <ul className="bg-base-100 rounded-t-none p-2">
+                                    <li><a>Link 1</a></li>
+                                    <li><a>Link 2</a></li>
+                                </ul>
+                            </details>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            {/*  */}
             <div className="w-full max-w-7xl mx-auto py-4 px-6 flex justify-between items-center gap-4">
                 <div className="text-2xl font-bold text-white">AK_Blogs</div>
 
